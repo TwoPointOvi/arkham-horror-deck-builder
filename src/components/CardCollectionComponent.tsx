@@ -1,3 +1,4 @@
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { ARKHAMDB_CARDS } from '../shared/urls';
 import CardDetails from './CardComponent';
@@ -67,15 +68,17 @@ class CardCollection extends React.Component<{}, CardState> {
     render() {
         if (!this.state.isLoading) {
             return (
-                <div>
+                <Grid container spacing={1}>
                     {
                         this.state.cardCollection.map((card: any) => {
                             return (
-                                <CardDetails cardInfo={card} key={card.name}></CardDetails>
+                                <Grid item xs={4} key={card.name}>
+                                    <CardDetails cardInfo={card}></CardDetails>
+                                </Grid>
                             );
                         })
                     }
-                </div>
+                </Grid>
             );
         } else {
             return (

@@ -1,3 +1,4 @@
+import { ButtonBase, Card, CardActionArea, CardMedia, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { ARKHAMDB } from '../shared/urls';
 
@@ -18,12 +19,24 @@ class CardDetails extends React.Component<CardProps, CardState> {
 
     render() {
         return (
-            <div>
-                <img
-                    src={ARKHAMDB + this.props.cardInfo.imagesrc}
+            <Card
+                style={{backgroundColor:'transparent'}}>
+                {/* <CardActionArea> */}
+                <ButtonBase
+                    focusRipple
                     key={this.props.cardInfo.name}
-                ></img>
-            </div>
+                    style={{
+                        width: 300,
+                        height: 480
+                    }}
+                >
+                    <img
+                        style={{height:"90%", maxWidth: 300, alignSelf: 'start'}}
+                        src={ARKHAMDB + this.props.cardInfo.imagesrc}
+                    ></img>
+
+                </ButtonBase>
+            </Card>
         );
     }
 }
