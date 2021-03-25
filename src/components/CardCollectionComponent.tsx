@@ -4,35 +4,59 @@ import CardDetails from './CardComponent';
 
 type CardState = {
     isLoading: boolean,
+    investigatorCollection: any
     cardCollection: any
 }
 
 class CardCollection extends React.Component<{}, CardState> {
     state: CardState = {
         isLoading: true,
+        investigatorCollection: {},
         cardCollection: {}
     };
 
     componentDidMount() {
-        this.getCardsFromUrl();
+        this.getCollectionFromUrl();
     }
 
-    getCardsFromUrl() {
+    investigatorCollection(res: any) {
+        const investigators = res.filter((card: any) => card.type_code === "investigator"
+                                                        && card.pack_code !== "promo"
+                                                        && card.imagesrc);
+        let seenNames:any = {};                                                    
+        const investigatorNoDup = investigators.filter((card: any) => {
+            if (!(card.name in seenNames)) {
+                seenNames[card.name] = true;
+                return true;
+            }
+        });
+        // this.saveData(investigatorNoDup);
+        this.setState({ investigatorCollection: investigatorNoDup });
+    }
+
+    cardCollection(res: any) {
+        const cards = res.filter((card: any) => (card.type_code === "asset"
+                                                || card.type_code === "event"
+                                                || card.type_code === "skill")
+                                                && card.subtype_code !== "weakness"
+                                                && card.subtype_code !== "basicweakness"
+                                                && card.imagesrc);
+        let seenNames:any = {};                                                    
+        const cardCollection = cards.filter((card: any) => {
+            if (!(card.name in seenNames)) {
+                seenNames[card.name] = true;
+                return true;
+            }
+        });
+        this.setState({ cardCollection: cardCollection });
+    }
+
+    getCollectionFromUrl() {
         return fetch(ARKHAMDB_CARDS)
             .then((res) => res.json())
             .then((resJSON: any) => {
-                const investigators = resJSON.filter((card: any) => card.type_code === "investigator"
-                                                                && card.pack_code !== "promo"
-                                                                && card.imagesrc);
-                let seenNames:any = {};                                                    
-                const investigatorNoDup = investigators.filter((card: any) => {
-                    if (!(card.name in seenNames)) {
-                        seenNames[card.name] = true;
-                        return true;
-                    }
-                });
-                // this.saveData(investigatorNoDup);
-                this.setState({ cardCollection: investigatorNoDup });
+                this.investigatorCollection(resJSON);
+                this.cardCollection(resJSON);
             })
             .catch(error => console.error(error))
             .finally(() => { 
