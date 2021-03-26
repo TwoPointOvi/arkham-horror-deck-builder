@@ -16,7 +16,7 @@ type CardState = {
     cardCollection: any
 }
 
-const numberOfCardsPerPage = 8;
+const numberOfCardsPerPage = 6;
 
 class CardCollection extends React.Component<{}, CardState> {
     state: CardState = {
@@ -104,9 +104,9 @@ class CardCollection extends React.Component<{}, CardState> {
             last = numberOfCardsPerPage - 1;
         }
 
-        if (last >= this.state.cardCollection.length) {
-            last = this.state.cardCollection.length - 1;
-            initial = last - (numberOfCardsPerPage - 1);
+        if (initial >= this.state.cardCollection.length) {
+            initial = this.state.showInitialIndex;
+            last = this.state.showLastIndex;
         }
 
         if (initial != this.state.showInitialIndex || last != this.state.showLastIndex) {
@@ -134,7 +134,7 @@ class CardCollection extends React.Component<{}, CardState> {
                         {
                             this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
                                 return (
-                                        <Grid item xs={3} key={card.name}>
+                                        <Grid item xs={4} key={card.name}>
                                             <CardDetails cardInfo={card}></CardDetails>
                                         </Grid>
                                 );
