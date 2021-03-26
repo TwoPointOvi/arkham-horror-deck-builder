@@ -1,10 +1,17 @@
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton, Slide } from '@material-ui/core';
+import { ArrowLeftSharp, ArrowRightSharp } from '@material-ui/icons';
 import React from 'react';
 import { ARKHAMDB_CARDS } from '../shared/urls';
 import CardDetails from './CardComponent';
 
 type CardState = {
     isLoading: boolean,
+    checked: boolean,
+    showInitialIndex: number,
+    showLastIndex: number,
+    newInitialIndex: number,
+    newLastIndex: number,
+    direction: 'left' | 'right' | 'up' | 'down',
     investigatorCollection: any
     cardCollection: any
 }
@@ -12,6 +19,12 @@ type CardState = {
 class CardCollection extends React.Component<{}, CardState> {
     state: CardState = {
         isLoading: true,
+        checked: true,
+        showInitialIndex: 0,
+        showLastIndex: 3,
+        newInitialIndex: 0,
+        newLastIndex: 3,
+        direction: 'right',
         investigatorCollection: {},
         cardCollection: {}
     };
@@ -65,19 +78,68 @@ class CardCollection extends React.Component<{}, CardState> {
             });
     }
 
+    handleChecked() {
+        this.setState({ checked: !this.state.checked });
+    }
+
+    updateIndexes() {
+        if (this.state.direction == 'left') this.setState({ direction: 'right'});
+        else this.setState({ direction: 'left'});
+        
+        this.setState({
+            showInitialIndex: this.state.newInitialIndex,
+            showLastIndex: this.state.newLastIndex
+        });
+        this.handleChecked();
+    }
+
+    handleIndexes(amount: number) {
+        let initial = this.state.showInitialIndex + amount;
+        let last = this.state.showLastIndex + amount;
+        
+        if (initial < 0) {
+            initial = 0;
+            last = 3;
+        }
+
+        if (last >= this.state.cardCollection.length) {
+            last = this.state.cardCollection.length - 1;
+            initial = last - 3;
+        }
+
+        if (initial != this.state.showInitialIndex || last != this.state.showLastIndex) {
+            this.setState({ direction: (amount < 0)? 'left':'right' });
+            this.handleChecked();
+            this.setState({ newInitialIndex: initial, newLastIndex: last });
+        }
+
+    }
+
     render() {
         if (!this.state.isLoading) {
             return (
                 <Grid container spacing={1}>
-                    {
-                        this.state.cardCollection.map((card: any) => {
-                            return (
-                                <Grid item xs={4} key={card.name}>
-                                    <CardDetails cardInfo={card}></CardDetails>
-                                </Grid>
-                            );
-                        })
-                    }
+                    <Grid item xs={12} style={{alignContent:'flex-start'}}>
+                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(4) }}>
+                            <ArrowLeftSharp></ArrowLeftSharp>
+                        </IconButton>
+                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(-4) }}>
+                            <ArrowRightSharp></ArrowRightSharp>
+                        </IconButton>
+                    </Grid>
+                    <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit onExited={() => { this.updateIndexes() }}>
+                        <Grid container spacing={1}>
+                        {
+                            this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
+                                return (
+                                        <Grid item xs={3} key={card.name}>
+                                            <CardDetails cardInfo={card}></CardDetails>
+                                        </Grid>
+                                );
+                            })
+                        }
+                        </Grid>
+                    </Slide>
                 </Grid>
             );
         } else {
