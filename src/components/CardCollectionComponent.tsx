@@ -16,14 +16,16 @@ type CardState = {
     cardCollection: any
 }
 
+const numberOfCardsPerPage = 8;
+
 class CardCollection extends React.Component<{}, CardState> {
     state: CardState = {
         isLoading: true,
         checked: true,
         showInitialIndex: 0,
-        showLastIndex: 3,
+        showLastIndex: numberOfCardsPerPage - 1,
         newInitialIndex: 0,
-        newLastIndex: 3,
+        newLastIndex: numberOfCardsPerPage - 1,
         direction: 'right',
         investigatorCollection: {},
         cardCollection: {}
@@ -99,12 +101,12 @@ class CardCollection extends React.Component<{}, CardState> {
         
         if (initial < 0) {
             initial = 0;
-            last = 3;
+            last = numberOfCardsPerPage - 1;
         }
 
         if (last >= this.state.cardCollection.length) {
             last = this.state.cardCollection.length - 1;
-            initial = last - 3;
+            initial = last - (numberOfCardsPerPage - 1);
         }
 
         if (initial != this.state.showInitialIndex || last != this.state.showLastIndex) {
@@ -120,10 +122,10 @@ class CardCollection extends React.Component<{}, CardState> {
             return (
                 <Grid container spacing={1}>
                     <Grid item xs={12} style={{alignContent:'flex-start'}}>
-                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(4) }}>
+                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(numberOfCardsPerPage) }}>
                             <ArrowLeftSharp></ArrowLeftSharp>
                         </IconButton>
-                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(-4) }}>
+                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(-numberOfCardsPerPage) }}>
                             <ArrowRightSharp></ArrowRightSharp>
                         </IconButton>
                     </Grid>
