@@ -6,6 +6,7 @@ import CardDetails from './CardComponent';
 
 type CardState = {
     isLoading: boolean,
+    isAnimating: boolean,
     checked: boolean,
     showInitialIndex: number,
     showLastIndex: number,
@@ -21,6 +22,7 @@ const numberOfCardsPerPage = 6;
 class CardCollection extends React.Component<{}, CardState> {
     state: CardState = {
         isLoading: true,
+        isAnimating: false,
         checked: true,
         showInitialIndex: 0,
         showLastIndex: numberOfCardsPerPage - 1,
@@ -96,6 +98,8 @@ class CardCollection extends React.Component<{}, CardState> {
     }
 
     handleIndexes(amount: number) {
+        if (this.state.isAnimating) return;
+
         let initial = this.state.showInitialIndex + amount;
         let last = this.state.showLastIndex + amount;
         
@@ -114,7 +118,14 @@ class CardCollection extends React.Component<{}, CardState> {
             this.handleChecked();
             this.setState({ newInitialIndex: initial, newLastIndex: last });
         }
+    }
 
+    animationFinished() {
+        this.setState({ isAnimating: false })
+    }
+
+    animationStarted() {
+        this.setState({ isAnimating: true })
     }
 
     render() {
@@ -129,7 +140,8 @@ class CardCollection extends React.Component<{}, CardState> {
                             <ArrowRightSharp></ArrowRightSharp>
                         </IconButton>
                     </Grid>
-                    <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit onExited={() => { this.updateIndexes() }}>
+                    <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit 
+                        onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
                         <Grid container spacing={1}>
                         {
                             this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
