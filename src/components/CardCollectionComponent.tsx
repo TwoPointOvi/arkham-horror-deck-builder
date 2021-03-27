@@ -1,4 +1,4 @@
-import { Grid, IconButton, Slide } from '@material-ui/core';
+import { Grid, GridList, GridListTile, IconButton, Slide } from '@material-ui/core';
 import { ArrowLeftSharp, ArrowRightSharp } from '@material-ui/icons';
 import React from 'react';
 import { ARKHAMDB_CARDS } from '../shared/urls';
@@ -131,7 +131,7 @@ class CardCollection extends React.Component<{}, CardState> {
     render() {
         if (!this.state.isLoading) {
             return (
-                <Grid container spacing={1}>
+                <Grid style={{justifyContent: 'center'}} container spacing={1}>
                     <Grid item xs={12} style={{alignContent:'flex-start'}}>
                         <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(numberOfCardsPerPage) }}>
                             <ArrowLeftSharp></ArrowLeftSharp>
@@ -142,17 +142,17 @@ class CardCollection extends React.Component<{}, CardState> {
                     </Grid>
                     <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit 
                         onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
-                        <Grid container spacing={1}>
+                        <GridList cellHeight='auto' cols={3}>
                         {
                             this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
                                 return (
-                                        <Grid item xs={4} key={card.name}>
+                                        <GridListTile cols={1} key={card.name}>
                                             <CardDetails cardInfo={card}></CardDetails>
-                                        </Grid>
+                                        </GridListTile>
                                 );
                             })
                         }
-                        </Grid>
+                        </GridList>
                     </Slide>
                 </Grid>
             );

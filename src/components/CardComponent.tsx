@@ -1,4 +1,4 @@
-import { ButtonBase, Card, CardActionArea, CardMedia, makeStyles } from '@material-ui/core';
+import { ButtonBase, Card, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { ARKHAMDB } from '../shared/urls';
 
@@ -26,8 +26,8 @@ class CardDetails extends React.Component<CardProps, CardState> {
                     focusRipple
                     key={this.props.cardInfo.name}
                     style={{
-                        width: 300,
-                        height: 480
+                        width: 250,
+                        height: 400
                     }}
                 >
                     <img
