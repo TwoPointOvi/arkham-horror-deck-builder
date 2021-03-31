@@ -54,8 +54,6 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
 
     componentDidMount() {
         this.getCollectionFromUrl();
-
-        console.log(this.props.deckCollection);
     }
 
     investigatorCollection(res: any) {
@@ -168,7 +166,8 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                             this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
                                 return (
                                         <GridListTile cols={1} key={card.name}>
-                                            <CardDetails cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
+                                            <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.name)[0]?.amount || 0} 
+                                                cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
                                         </GridListTile>
                                 );
                             })
