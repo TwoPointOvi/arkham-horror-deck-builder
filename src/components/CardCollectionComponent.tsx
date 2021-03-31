@@ -1,8 +1,12 @@
 import { Grid, GridList, GridListTile, IconButton, Slide } from '@material-ui/core';
 import { ArrowLeftSharp, ArrowRightSharp } from '@material-ui/icons';
 import React from 'react';
+import { connect } from 'react-redux';
+import { addCardToDeck, removeCardFromDeck } from '../redux/ActionCreators';
 import { ARKHAMDB_CARDS } from '../shared/urls';
 import CardDetails from './CardComponent';
+
+const numberOfCardsPerPage = 6;
 
 type CardState = {
     isLoading: boolean,
@@ -17,9 +21,24 @@ type CardState = {
     cardCollection: any
 }
 
-const numberOfCardsPerPage = 6;
+type CardCollectionProps = {
+    deckCollection: any,
+    addCardToDeck: any,
+    removeCardFromDeck: any
+}
 
-class CardCollection extends React.Component<{}, CardState> {
+const mapStateToProps = (state: any) => {
+    return {
+        deckCollection: state.deckCollection
+    };
+}
+
+const mapDispatchToProps = (dispatch: any) => ({
+    addCardToDeck: (cardId: any, amount: number) => dispatch(addCardToDeck(cardId, amount)),
+    removeCardFromDeck: (cardId: any, amount: number) => dispatch(removeCardFromDeck(cardId, amount))
+});
+
+class CardCollection extends React.Component<CardCollectionProps, CardState> {
     state: CardState = {
         isLoading: true,
         isAnimating: false,
@@ -35,6 +54,8 @@ class CardCollection extends React.Component<{}, CardState> {
 
     componentDidMount() {
         this.getCollectionFromUrl();
+
+        console.log(this.props.deckCollection);
     }
 
     investigatorCollection(res: any) {
@@ -147,7 +168,7 @@ class CardCollection extends React.Component<{}, CardState> {
                             this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
                                 return (
                                         <GridListTile cols={1} key={card.name}>
-                                            <CardDetails cardInfo={card}></CardDetails>
+                                            <CardDetails cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
                                         </GridListTile>
                                 );
                             })
@@ -164,4 +185,4 @@ class CardCollection extends React.Component<{}, CardState> {
     }
 }
 
-export default CardCollection;
+export default connect(mapStateToProps, mapDispatchToProps)(CardCollection);

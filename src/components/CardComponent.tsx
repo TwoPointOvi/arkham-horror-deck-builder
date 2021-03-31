@@ -4,7 +4,9 @@ import React from 'react';
 import { ARKHAMDB } from '../shared/urls';
 
 type CardProps = {
-    cardInfo: any
+    cardInfo: any,
+    addCardToDeck: any,
+    removeCardFromDeck: any
 }
 
 type CardState = {
@@ -31,6 +33,7 @@ class CardDetails extends React.Component<CardProps, CardState> {
     addToDeck() {
         const cardInDeck = this.state.cardInDeck + 1;
         if (cardInDeck <= this.state.cardInfo.deck_limit) {
+            this.props.addCardToDeck(this.state.cardInfo.name, cardInDeck);
             this.setState({
                 cardInDeck: cardInDeck 
             });
@@ -40,6 +43,7 @@ class CardDetails extends React.Component<CardProps, CardState> {
     removeFromDeck() {
         const cardInDeck = this.state.cardInDeck - 1;
         if (cardInDeck < 0) return;
+        this.props.removeCardFromDeck(this.state.cardInfo.name, -1);
         this.setState({
             cardInDeck: cardInDeck 
         });
