@@ -161,18 +161,18 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                     </Grid>
                     <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit 
                         onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
-                        <GridList cellHeight='auto' cols={3}>
+                        <Grid container spacing={1}>
                         {
                             this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
                                 return (
-                                        <GridListTile cols={1} key={card.name}>
+                                        <Grid item xs={12} sm={6} md={4} key={card.name}>
                                             <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.name)[0]?.amount || 0} 
                                                 cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
-                                        </GridListTile>
+                                        </Grid>
                                 );
                             })
                         }
-                        </GridList>
+                        </Grid>
                     </Slide>
                 </Grid>
             );
