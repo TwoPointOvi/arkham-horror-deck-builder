@@ -1,4 +1,4 @@
-import { ButtonBase, Card, Icon, IconButton, makeStyles } from '@material-ui/core';
+import { ButtonBase, Card, IconButton, makeStyles } from '@material-ui/core';
 import { BrightnessHigh, BrightnessLow } from '@material-ui/icons';
 import React from 'react';
 import { ARKHAMDB } from '../shared/urls';
@@ -59,7 +59,7 @@ class CardDetails extends React.Component<CardProps, CardState> {
                     key={this.state.cardInfo.name}
                     style={{
                         width: 250,
-                        height: 400
+                        height: 350
                     }}
                     onClick={() => this.addToDeck() }
                 >

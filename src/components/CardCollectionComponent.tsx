@@ -1,10 +1,12 @@
-import { Grid, GridList, GridListTile, IconButton, Slide } from '@material-ui/core';
+import { Grid, IconButton, Slide } from '@material-ui/core';
 import { ArrowLeftSharp, ArrowRightSharp } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux';
 import { addCardToDeck, removeCardFromDeck } from '../redux/ActionCreators';
 import { ARKHAMDB_CARDS } from '../shared/urls';
+import CardCollectionFilter from './CardCollectionFilter';
 import CardDetails from './CardComponent';
+import CardFilterButton from './CardFilterButton';
 
 const numberOfCardsPerPage = 6;
 
@@ -17,8 +19,9 @@ type CardState = {
     newInitialIndex: number,
     newLastIndex: number,
     direction: 'left' | 'right' | 'up' | 'down',
-    investigatorCollection: any
-    cardCollection: any
+    investigatorCollection: any,
+    cardCollection: any,
+    filteredCardCollection: any
 }
 
 type CardCollectionProps = {
@@ -49,7 +52,8 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
         newLastIndex: numberOfCardsPerPage - 1,
         direction: 'right',
         investigatorCollection: {},
-        cardCollection: {}
+        cardCollection: {},
+        filteredCardCollection: {}
     };
 
     componentDidMount() {
@@ -80,12 +84,14 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                                                 && card.imagesrc);
         let seenNames:any = {};                                                    
         const cardCollection = cards.filter((card: any) => {
+            card.filtered = false;
             if (!(card.name in seenNames)) {
                 seenNames[card.name] = true;
                 return true;
             }
         });
         this.setState({ cardCollection: cardCollection });
+        this.setState({ filteredCardCollection: cardCollection });
     }
 
     getCollectionFromUrl() {
@@ -106,7 +112,7 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
     }
 
     updateIndexes() {
-        if (this.state.direction == 'left') this.setState({ direction: 'right'});
+        if (this.state.direction === 'left') this.setState({ direction: 'right'});
         else this.setState({ direction: 'left'});
         
         this.setState({
@@ -127,15 +133,41 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
             last = numberOfCardsPerPage - 1;
         }
 
-        if (initial >= this.state.cardCollection.length) {
+        if (initial >= this.state.filteredCardCollection.length) {
             initial = this.state.showInitialIndex;
             last = this.state.showLastIndex;
         }
 
-        if (initial != this.state.showInitialIndex || last != this.state.showLastIndex) {
+        if (initial !== this.state.showInitialIndex || last !== this.state.showLastIndex) {
             this.setState({ direction: (amount < 0)? 'left':'right' });
             this.handleChecked();
             this.setState({ newInitialIndex: initial, newLastIndex: last });
+        }
+    }
+
+    filterDeckCollection(type: string) {
+        if (type !== 'all') {
+            const filteredCollection = this.state.cardCollection.filter((card: any) => {
+                return card.faction_code === type 
+            });
+            
+            this.setState({
+                filteredCardCollection: filteredCollection,
+                showInitialIndex: 0,
+                showLastIndex: numberOfCardsPerPage - 1,
+                newInitialIndex: 0,
+                newLastIndex: numberOfCardsPerPage - 1,
+                direction: 'right',
+            });
+        } else {
+            this.setState({
+                filteredCardCollection: this.state.cardCollection,
+                showInitialIndex: 0,
+                showLastIndex: numberOfCardsPerPage - 1,
+                newInitialIndex: 0,
+                newLastIndex: numberOfCardsPerPage - 1,
+                direction: 'right',
+            });
         }
     }
 
@@ -150,7 +182,10 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
     render() {
         if (!this.state.isLoading) {
             return (
-                <Grid style={{justifyContent: 'center'}} container spacing={1}>
+                <Grid container spacing={1}>
+                    <Grid item xs={12} style={{alignContent:'flex-start'}}>
+                        <CardCollectionFilter filterFunction={(type: string) => this.filterDeckCollection(type)}></CardCollectionFilter>
+                    </Grid>
                     <Grid item xs={12} style={{alignContent:'flex-start'}}>
                         <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(numberOfCardsPerPage) }}>
                             <ArrowLeftSharp></ArrowLeftSharp>
@@ -159,21 +194,23 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                             <ArrowRightSharp></ArrowRightSharp>
                         </IconButton>
                     </Grid>
-                    <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit 
-                        onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
-                        <Grid container spacing={1}>
-                        {
-                            this.state.cardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
-                                return (
-                                        <Grid item xs={12} sm={6} md={4} key={card.name}>
-                                            <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.name)[0]?.amount || 0} 
-                                                cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
-                                        </Grid>
-                                );
-                            })
-                        }
-                        </Grid>
-                    </Slide>
+                    <Grid container item xs={12}>
+                        <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit 
+                            onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
+                            <Grid container item spacing={2}>
+                            {
+                                this.state.filteredCardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
+                                    return (
+                                            <Grid item xs={12} sm={6} md={4} key={card.name}>
+                                                <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.name)[0]?.amount || 0} 
+                                                    cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
+                                            </Grid>
+                                    );
+                                })
+                            }
+                            </Grid>
+                        </Slide>
+                    </Grid>
                 </Grid>
             );
         } else {
