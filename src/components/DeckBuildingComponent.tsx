@@ -1,7 +1,8 @@
 import React from 'react';
-import { CircularProgress, Grid, Paper } from '@material-ui/core';
+import { CircularProgress, Grid } from '@material-ui/core';
 import CardCollection from './CardCollectionComponent';
 import { ARKHAMDB_CARDS } from '../shared/urls';
+import InvestigatorDeckComponent from './InvestigatorDeckComponent';
 
 type DeckBuildingState = {
     isLoading: boolean
@@ -75,7 +76,7 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
             return (
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={4}>
-                        <Paper>Investigator</Paper>
+                        <InvestigatorDeckComponent></InvestigatorDeckComponent>
                     </Grid>
                     <Grid item xs={12} sm={8}>
                         <CardCollection cardCollection={this.state.cardCollection} filteredCardCollection={this.state.filteredCardCollection}></CardCollection>

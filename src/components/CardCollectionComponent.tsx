@@ -3,7 +3,6 @@ import { ArrowLeftSharp, ArrowRightSharp } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux';
 import { addCardToDeck, removeCardFromDeck } from '../redux/ActionCreators';
-import { ARKHAMDB_CARDS } from '../shared/urls';
 import CardCollectionFilter from './CardCollectionFilter';
 import CardDetails from './CardComponent';
 
