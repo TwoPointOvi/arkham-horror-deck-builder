@@ -1,4 +1,4 @@
-import { Grid, IconButton, Slide } from '@material-ui/core';
+import { CircularProgress, Grid, IconButton, Slide } from '@material-ui/core';
 import { ArrowLeftSharp, ArrowRightSharp } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -6,7 +6,6 @@ import { addCardToDeck, removeCardFromDeck } from '../redux/ActionCreators';
 import { ARKHAMDB_CARDS } from '../shared/urls';
 import CardCollectionFilter from './CardCollectionFilter';
 import CardDetails from './CardComponent';
-import CardFilterButton from './CardFilterButton';
 
 const numberOfCardsPerPage = 6;
 
@@ -19,7 +18,6 @@ type CardState = {
     newInitialIndex: number,
     newLastIndex: number,
     direction: 'left' | 'right' | 'up' | 'down',
-    investigatorCollection: any,
     cardCollection: any,
     filteredCardCollection: any
 }
@@ -51,28 +49,12 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
         newInitialIndex: 0,
         newLastIndex: numberOfCardsPerPage - 1,
         direction: 'right',
-        investigatorCollection: {},
         cardCollection: {},
         filteredCardCollection: {}
     };
 
     componentDidMount() {
         this.getCollectionFromUrl();
-    }
-
-    investigatorCollection(res: any) {
-        const investigators = res.filter((card: any) => card.type_code === "investigator"
-                                                        && card.pack_code !== "promo"
-                                                        && card.imagesrc);
-        let seenNames:any = {};                                                    
-        const investigatorNoDup = investigators.filter((card: any) => {
-            if (!(card.name in seenNames)) {
-                seenNames[card.name] = true;
-                return true;
-            }
-        });
-        // this.saveData(investigatorNoDup);
-        this.setState({ investigatorCollection: investigatorNoDup });
     }
 
     cardCollection(res: any) {
@@ -98,7 +80,6 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
         return fetch(ARKHAMDB_CARDS)
             .then((res) => res.json())
             .then((resJSON: any) => {
-                this.investigatorCollection(resJSON);
                 this.cardCollection(resJSON);
             })
             .catch(error => console.error(error))
@@ -215,7 +196,7 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
             );
         } else {
             return (
-                <div></div>
+                <CircularProgress></CircularProgress>
             );
         }
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import './App.css';
-import CardCollection from './components/CardCollectionComponent';
+import DeckBuildingComponent from './components/DeckBuildingComponent';
 import { ConfigureStore } from './redux/configureStore';
 
 const store = ConfigureStore();
@@ -11,7 +11,7 @@ function App() {
     <Provider store={store}>
         <div className="App">
             <div className="App-header">
-                <CardCollection></CardCollection>
+                <DeckBuildingComponent></DeckBuildingComponent>
             </div>
         </div>
     </Provider>
