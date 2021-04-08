@@ -6,13 +6,17 @@ import { ARKHAMDB_CARDS } from '../shared/urls';
 type DeckBuildingState = {
     isLoading: boolean
     investigatorCollection: any,
+    cardCollection: any,
+    filteredCardCollection: any
 }
 
 
 class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
     state: DeckBuildingState = {
         isLoading: true,
-        investigatorCollection: {}
+        investigatorCollection: {},
+        cardCollection: {},
+        filteredCardCollection: {}
     }
 
     componentDidMount() {
@@ -32,7 +36,25 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
         });
         // this.saveData(investigatorNoDup);
         this.setState({ investigatorCollection: investigatorNoDup });
-        console.log(investigatorNoDup);
+    }
+
+    cardCollection(res: any) {
+        const cards = res.filter((card: any) => (card.type_code === "asset"
+                                                || card.type_code === "event"
+                                                || card.type_code === "skill")
+                                                && card.subtype_code !== "weakness"
+                                                && card.subtype_code !== "basicweakness"
+                                                && card.imagesrc);
+        let seenNames:any = {};                                                    
+        const cardCollection = cards.filter((card: any) => {
+            card.filtered = false;
+            if (!(card.name in seenNames)) {
+                seenNames[card.name] = true;
+                return true;
+            }
+        });
+        this.setState({ cardCollection: cardCollection });
+        this.setState({ filteredCardCollection: cardCollection });
     }
 
     getCollectionFromUrl() {
@@ -40,6 +62,7 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
             .then((res) => res.json())
             .then((resJSON: any) => {
                 this.investigatorCollection(resJSON);
+                this.cardCollection(resJSON);
             })
             .catch(error => console.error(error))
             .finally(() => { 
@@ -55,7 +78,7 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
                         <Paper>Investigator</Paper>
                     </Grid>
                     <Grid item xs={12} sm={8}>
-                        <CardCollection></CardCollection>
+                        <CardCollection cardCollection={this.state.cardCollection} filteredCardCollection={this.state.filteredCardCollection}></CardCollection>
                     </Grid>
                 </Grid>
             );

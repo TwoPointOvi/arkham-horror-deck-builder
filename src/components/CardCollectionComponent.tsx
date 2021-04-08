@@ -25,7 +25,9 @@ type CardState = {
 type CardCollectionProps = {
     deckCollection: any,
     addCardToDeck: any,
-    removeCardFromDeck: any
+    removeCardFromDeck: any,
+    cardCollection: any,
+    filteredCardCollection: any
 }
 
 const mapStateToProps = (state: any) => {
@@ -54,38 +56,11 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
     };
 
     componentDidMount() {
-        this.getCollectionFromUrl();
-    }
-
-    cardCollection(res: any) {
-        const cards = res.filter((card: any) => (card.type_code === "asset"
-                                                || card.type_code === "event"
-                                                || card.type_code === "skill")
-                                                && card.subtype_code !== "weakness"
-                                                && card.subtype_code !== "basicweakness"
-                                                && card.imagesrc);
-        let seenNames:any = {};                                                    
-        const cardCollection = cards.filter((card: any) => {
-            card.filtered = false;
-            if (!(card.name in seenNames)) {
-                seenNames[card.name] = true;
-                return true;
-            }
+        this.setState({
+            cardCollection: this.props.cardCollection,
+            filteredCardCollection: this.props.filteredCardCollection,
+            isLoading: false
         });
-        this.setState({ cardCollection: cardCollection });
-        this.setState({ filteredCardCollection: cardCollection });
-    }
-
-    getCollectionFromUrl() {
-        return fetch(ARKHAMDB_CARDS)
-            .then((res) => res.json())
-            .then((resJSON: any) => {
-                this.cardCollection(resJSON);
-            })
-            .catch(error => console.error(error))
-            .finally(() => { 
-                this.setState({ isLoading: false });
-            });
     }
 
     handleChecked() {
