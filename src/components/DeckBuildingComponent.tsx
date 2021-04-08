@@ -1,5 +1,5 @@
 import React from 'react';
-import { CircularProgress, Grid } from '@material-ui/core';
+import { CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import CardCollection from './CardCollectionComponent';
 import { ARKHAMDB_CARDS } from '../shared/urls';
 import InvestigatorDeckComponent from './InvestigatorDeckComponent';
@@ -8,7 +8,9 @@ type DeckBuildingState = {
     isLoading: boolean
     investigatorCollection: any,
     cardCollection: any,
-    filteredCardCollection: any
+    filteredCardCollection: any,
+    investigator: string,
+    investigatorInfo: any,
 }
 
 
@@ -17,7 +19,14 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
         isLoading: true,
         investigatorCollection: {},
         cardCollection: {},
-        filteredCardCollection: {}
+        filteredCardCollection: {},
+        investigator: '',
+        investigatorInfo: {}
+    }
+
+    constructor(props: any) {
+        super(props);
+        this.handleInvestigatorChange = this.handleInvestigatorChange.bind(this);
     }
 
     componentDidMount() {
@@ -71,12 +80,46 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
             });
     }
 
+    handleInvestigatorChange(event: React.ChangeEvent<{ value: unknown }>) {
+        this.setState({
+        });
+
+        const invInfo = this.state.investigatorCollection.find((inv: any) => {
+            if (inv.name === event.target.value) {
+                return inv;
+            }
+        });
+
+        if (invInfo) {
+            this.setState({
+                investigator: invInfo.name,
+                investigatorInfo: invInfo
+            });
+        }
+    }
+
     render() {
         if (!this.state.isLoading) {
             return (
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={4}>
-                        <InvestigatorDeckComponent></InvestigatorDeckComponent>
+                        <Grid item xs={12}>
+                            <FormControl style={{minWidth: 200, backgroundColor: 'white', marginBottom: '20px'}} variant='filled'>
+                                <InputLabel id='investigator-name-label'>Investigator</InputLabel>
+                                <Select id='investigator-name' labelId='investigator-name-label' value={this.state.investigator} 
+                                    onChange={this.handleInvestigatorChange} label='Investigator'>
+                                    <MenuItem value=""><b>None</b></MenuItem>
+                                    {
+                                        this.state.investigatorCollection.map((investigator:any) => {
+                                            return (
+                                                <MenuItem key={investigator.code} value={investigator.name}>{investigator.name}</MenuItem>
+                                            );
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <InvestigatorDeckComponent investigator={this.state.investigator} investigatorData={this.state.investigatorInfo}></InvestigatorDeckComponent>
                     </Grid>
                     <Grid item xs={12} sm={8}>
                         <CardCollection cardCollection={this.state.cardCollection} filteredCardCollection={this.state.filteredCardCollection}></CardCollection>
