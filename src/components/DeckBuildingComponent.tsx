@@ -81,8 +81,6 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
     }
 
     handleInvestigatorChange(event: React.ChangeEvent<{ value: unknown }>) {
-        this.setState({
-        });
 
         const invInfo = this.state.investigatorCollection.find((inv: any) => {
             if (inv.name === event.target.value) {
