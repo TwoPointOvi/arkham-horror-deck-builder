@@ -20,7 +20,7 @@ class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {
                     <Grid item xs={12}>
                         <Paper style={{backgroundColor:'transparent'}} elevation={0}>
                             <img
-                                style={{width:"100%", height:"100%", alignSelf: 'start'}}
+                                style={{width:"90%", maxHeight:350, alignSelf: 'start'}}
                                 src={ARKHAMDB + this.props.investigatorData.imagesrc}
                             ></img>
                         </Paper>
@@ -28,7 +28,7 @@ class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {
                     <Grid item xs={12}>
                         <Paper style={{backgroundColor:'transparent'}} elevation={0}>
                             <img
-                                style={{width:"100%", height:"100%", alignSelf: 'start'}}
+                                style={{width:"90%", maxHeight:350, alignSelf: 'start'}}
                                 src={ARKHAMDB + this.props.investigatorData.backimagesrc}
                             ></img>
                         </Paper>

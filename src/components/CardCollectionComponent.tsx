@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, IconButton, Slide } from '@material-ui/core';
+import { CircularProgress, Grid, Grow, IconButton, Slide } from '@material-ui/core';
 import { ArrowLeftSharp, ArrowRightSharp } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -136,6 +136,7 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
 
     render() {
         if (!this.state.isLoading) {
+            const slicedCollection = this.state.filteredCardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1);
             return (
                 <Grid container spacing={1}>
                     <Grid item xs={12} style={{alignContent:'flex-start'}}>
@@ -150,21 +151,22 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                         </IconButton>
                     </Grid>
                     <Grid container item xs={12}>
-                        <Slide direction={this.state.direction} in={this.state.checked} mountOnEnter unmountOnExit 
-                            onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
-                            <Grid container item spacing={2}>
-                            {
-                                this.state.filteredCardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
-                                    return (
-                                            <Grid item xs={12} sm={6} md={4} key={card.code}>
-                                                <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.code)[0]?.amount || 0} 
-                                                    cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
-                                            </Grid>
-                                    );
-                                })
-                            }
-                            </Grid>
-                        </Slide>
+                        <Grid container item spacing={2}>
+                        {
+                            slicedCollection.map((card: any) => {
+                                return (
+                                    <Grow in={this.state.checked} mountOnEnter unmountOnExit key={card.code}
+                                        timeout={{ enter: slicedCollection.indexOf(card) * 250 + 500, exit: 150}}
+                                        onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
+                                        <Grid item xs={12} sm={6} md={4}>
+                                            <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.code)[0]?.amount || 0} 
+                                                cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
+                                        </Grid>
+                                    </Grow>
+                                );
+                            })
+                        }
+                        </Grid>
                     </Grid>
                 </Grid>
             );
