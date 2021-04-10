@@ -57,16 +57,37 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
                                                 && card.subtype_code !== "weakness"
                                                 && card.subtype_code !== "basicweakness"
                                                 && card.imagesrc);
-        let seenNames:any = {};                                                    
+        let seenCodes:any = {};                                                    
         const cardCollection = cards.filter((card: any) => {
-            card.filtered = false;
-            if (!(card.name in seenNames)) {
-                seenNames[card.name] = true;
+            // card.filtered = false;
+            if (!((card.code) in seenCodes)) {
+                seenCodes[card.code] = true;
                 return true;
             }
         });
-        this.setState({ cardCollection: cardCollection });
-        this.setState({ filteredCardCollection: cardCollection });
+
+        //re-arrange collection
+        const cardMap: any = {};
+        const arrangedCollection = cardCollection.filter((card: any) => {
+            if (card.restrictions) {
+                return true;
+            } else {
+                if (cardMap[card.faction_code + card.type_code + card.xp]) {
+                    cardMap[card.faction_code + card.type_code + card.xp].push(card);
+                } else {
+                    cardMap[card.faction_code + card.type_code + card.xp] = [card];
+                }
+            }
+        });
+
+        Object.keys(cardMap).sort().forEach((key: string) => {
+            cardMap[key].forEach((card: any) => {
+                arrangedCollection.push(card);
+            });
+        });
+
+        this.setState({ cardCollection: arrangedCollection });
+        this.setState({ filteredCardCollection: arrangedCollection });
     }
 
     getCollectionFromUrl() {

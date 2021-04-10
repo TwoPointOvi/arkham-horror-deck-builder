@@ -156,8 +156,8 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                             {
                                 this.state.filteredCardCollection.slice(this.state.showInitialIndex, this.state.showLastIndex + 1).map((card: any) => {
                                     return (
-                                            <Grid item xs={12} sm={6} md={4} key={card.name}>
-                                                <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.name)[0]?.amount || 0} 
+                                            <Grid item xs={12} sm={6} md={4} key={card.code}>
+                                                <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.code)[0]?.amount || 0} 
                                                     cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
                                             </Grid>
                                     );
