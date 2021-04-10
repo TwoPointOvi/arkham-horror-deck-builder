@@ -117,9 +117,22 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
                 investigatorInfo: invInfo,
                 isLoadingCollection: true
             });
-        }
+            
+            this.filterCardCollectionForInvestigator(invInfo);
+        } else {
+            this.setState({
+                investigator: '',
+                investigatorInfo: {},
+                isLoadingCollection: true,
+                filteredCardCollection: this.state.cardCollection
+            });
 
-        this.filterCardCollectionForInvestigator(invInfo);
+            setTimeout(() => {
+                this.setState({
+                    isLoadingCollection: false
+                })
+            }, 1500);
+        }
     }
 
     filterCardCollectionForInvestigator(invInfo: any) {
