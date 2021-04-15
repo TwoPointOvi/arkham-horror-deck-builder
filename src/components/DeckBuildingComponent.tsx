@@ -183,9 +183,9 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
                         return true;
                     }
                 } else if (deckOption.uses) {
-                    if (card.text?.indexOf("Uses (") !== -1 && card.text?.indexOf(deckOption.uses[0] + ")") !== -1 &&
+                    if (card.text && card.text?.indexOf("Uses (") !== -1 && card.text?.indexOf(deckOption.uses[0] + ")") !== -1 &&
                         card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
-                        return true;
+                            return true;
                     }
                 } else if (deckOption.text) {
                     const regex = new RegExp(deckOption.text[0], 'g');
