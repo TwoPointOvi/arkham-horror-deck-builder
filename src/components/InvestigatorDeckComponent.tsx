@@ -41,7 +41,7 @@ class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {
                             ></img>
                         </Paper>
                     </Grid>
-                    {/* <Grid item xs={12}>
+                    <Grid item xs={12}>
                         {
                             this.props.deckCollection.cards.map((cardInDeck:any) => {
                                 return (
@@ -51,7 +51,7 @@ class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {
                                 )
                             })
                         }
-                    </Grid> */}
+                    </Grid>
                 </Grid>
             );
         } else {
