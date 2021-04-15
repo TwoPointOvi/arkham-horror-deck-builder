@@ -148,69 +148,58 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
 
     filterCardCollectionForInvestigator(invInfo: any) {
         let filteredCollection: any = [];
-        let notLegal: any;
-        invInfo.deck_options.forEach((deckOption: any) => {
-            if (deckOption.not) {
-                notLegal = deckOption;
-            } else if (deckOption.faction) {
-                const auxFilter = this.state.cardCollection.filter((card:any) => {
+
+        filteredCollection = this.state.cardCollection.filter((card:any) => {
+            if (card.restrictions?.investigator) {
+                console.log(invInfo.code, card.restrictions.investigator, invInfo.code === card.restrictions.investigator);
+                return Object.keys(card.restrictions.investigator).includes(invInfo.code);
+            }
+
+            for (let i = 0; i < invInfo.deck_options.length; i++) {
+                const deckOption = invInfo.deck_options[i];
+                let checkToAdd: boolean = true;
+
+                if (deckOption.not) {
+                    if (!deckOption.level) {
+                        deckOption.level = {
+                            min: 0,
+                            max: 5
+                        };
+                    }
+
+                    checkToAdd = !(card.traits?.toLowerCase().includes(deckOption.trait[0]) &&
+                        card.xp >= deckOption.level.min && card.xp <= deckOption.level.max);
+                }
+                if (!checkToAdd) return false;
+
+                if (deckOption.faction) {
                     if ((deckOption.faction.includes(card.faction_code) ||
                         (card.faction2_code && deckOption.faction.includes(card.faction2_code))) &&
                         card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
                         return true;
                     }
-                });
-                filteredCollection = filteredCollection.concat(auxFilter);
-            } else if (deckOption.trait) {
-                const auxFilter = this.state.cardCollection.filter((card: any) => {
+                } else if (deckOption.trait) {
                     if (card.traits?.toLowerCase().includes(deckOption.trait[0]) &&
-                        !filteredCollection.includes(card) &&
                         card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
                         return true;
                     }
-                });
-                filteredCollection = filteredCollection.concat(auxFilter);
-            } else if (deckOption.uses) {
-                const auxFilter = this.state.cardCollection.filter((card: any) => {
-                    if (!filteredCollection.includes(card) &&
-                        card.text?.indexOf("Uses (") !== -1 && card.text?.indexOf(deckOption.uses[0] + ")") !== -1 &&
+                } else if (deckOption.uses) {
+                    if (card.text?.indexOf("Uses (") !== -1 && card.text?.indexOf(deckOption.uses[0] + ")") !== -1 &&
                         card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
                         return true;
                     }
-                });
-                filteredCollection = filteredCollection.concat(auxFilter);
-            } else if (deckOption.text) {
-                const regex = new RegExp(deckOption.text[0], 'g');
-                const auxFilter = this.state.cardCollection.filter((card: any) => {
-                    if (!filteredCollection.includes(card) && card.text &&
-                        regex.test(card.text)) {
+                } else if (deckOption.text) {
+                    const regex = new RegExp(deckOption.text[0], 'g');
+                    if (card.text && regex.test(card.text)) {
                         return true;
                     }
-                });
-                filteredCollection = filteredCollection.concat(auxFilter);
-            } else if (deckOption.level) {
-                const auxFilter = this.state.cardCollection.filter((card:any) => {
-                    if (card.xp >= deckOption.level.min && card.xp <= deckOption.level.max && !filteredCollection.includes(card)) {
-                        return true;
-                    }
-                });
-                filteredCollection = filteredCollection.concat(auxFilter);
+                }
+                else if (deckOption.level &&
+                    card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
+                    return true;
+                }
             }
         });
-
-        if (notLegal) {
-            if (!notLegal.level) {
-                notLegal.level = {
-                    min: 0,
-                    max: 5
-                };
-            }
-
-            filteredCollection = filteredCollection.filter((card:any) => {
-                return !(card.traits?.toLowerCase().includes(notLegal.trait[0]) &&
-                    card.xp >= notLegal.level.min && card.xp <= notLegal.level.max)
-            });
-        }
 
         this.setState({
             filteredCardCollection: filteredCollection
