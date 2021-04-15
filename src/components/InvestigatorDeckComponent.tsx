@@ -33,14 +33,14 @@ class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {
                             ></img>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <Paper style={{backgroundColor:'transparent'}} elevation={0}>
                             <img
                                 style={{width:"90%", maxHeight:350, alignSelf: 'start'}}
                                 src={ARKHAMDB + this.props.investigatorData.backimagesrc}
                             ></img>
                         </Paper>
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                         {
                             this.props.deckCollection.cards.map((cardInDeck:any) => {
