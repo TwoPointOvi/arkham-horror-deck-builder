@@ -148,8 +148,11 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
 
     filterCardCollectionForInvestigator(invInfo: any) {
         let filteredCollection: any = [];
+        let notLegal: any;
         invInfo.deck_options.forEach((deckOption: any) => {
-            if (deckOption.faction) {
+            if (deckOption.not) {
+                notLegal = deckOption;
+            } else if (deckOption.faction) {
                 const auxFilter = this.state.cardCollection.filter((card:any) => {
                     if ((deckOption.faction.includes(card.faction_code) ||
                         (card.faction2_code && deckOption.faction.includes(card.faction2_code))) &&
@@ -176,6 +179,20 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
                 filteredCollection = filteredCollection.concat(auxFilter);
             }
         });
+
+        if (notLegal) {
+            if (!notLegal.level) {
+                notLegal.level = {
+                    min: 0,
+                    max: 5
+                };
+            }
+
+            filteredCollection = filteredCollection.filter((card:any) => {
+                return !(card.traits?.toLowerCase().includes(notLegal.trait[0]) &&
+                    card.xp >= notLegal.level.min && card.xp <= notLegal.level.max)
+            });
+        }
 
         this.setState({
             filteredCardCollection: filteredCollection
