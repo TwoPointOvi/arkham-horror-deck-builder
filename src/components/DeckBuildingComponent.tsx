@@ -3,6 +3,8 @@ import { CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } fro
 import CardCollection from './CardCollectionComponent';
 import { ARKHAMDB_CARDS } from '../shared/urls';
 import InvestigatorDeckComponent from './InvestigatorDeckComponent';
+import { connect } from 'react-redux';
+import { deleteDeck } from '../redux/ActionCreators';
 
 type DeckBuildingState = {
     isLoading: boolean,
@@ -14,8 +16,16 @@ type DeckBuildingState = {
     investigatorInfo: any,
 }
 
+type DeckBuildingProps = {
+    deleteDeck: any
+}
 
-class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
+const mapDispatchToProps = (dispatch: any) => ({
+    deleteDeck: () => dispatch(deleteDeck())
+});
+
+
+class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuildingState> {
     state: DeckBuildingState = {
         isLoading: true,
         isLoadingCollection: true,
@@ -134,6 +144,8 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
                 })
             }, 1500);
         }
+
+        this.props.deleteDeck();
     }
 
     filterCardCollectionForInvestigator(invInfo: any) {
@@ -213,4 +225,4 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
     }
 }
 
-export default DeckBuildingComponent;
+export default connect(null, mapDispatchToProps)(DeckBuildingComponent);
