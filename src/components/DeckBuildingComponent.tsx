@@ -56,9 +56,7 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
                 return true;
             }
         });
-        // this.saveData(investigatorNoDup);
         this.setState({ investigatorCollection: investigatorNoDup });
-        console.log(investigatorNoDup);
     }
 
     cardCollection(res: any) {
@@ -153,11 +151,19 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
         invInfo.deck_options.forEach((deckOption: any) => {
             if (deckOption.faction) {
                 const auxFilter = this.state.cardCollection.filter((card:any) => {
-                    for (let i: number = 0; i < deckOption.faction.length; i++) {
-                        if (card.faction_code === deckOption.faction[i] &&
-                            card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
-                            return true;
-                        }    
+                    if ((deckOption.faction.includes(card.faction_code) ||
+                        (card.faction2_code && deckOption.faction.includes(card.faction2_code))) &&
+                        card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
+                        return true;
+                    }
+                });
+                filteredCollection = filteredCollection.concat(auxFilter);
+            } else if (deckOption.trait) {
+                const auxFilter = this.state.cardCollection.filter((card: any) => {
+                    if (card.traits?.toLowerCase().includes(deckOption.trait[0]) &&
+                        !filteredCollection.includes(card) &&
+                        card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
+                        return true;
                     }
                 });
                 filteredCollection = filteredCollection.concat(auxFilter);
