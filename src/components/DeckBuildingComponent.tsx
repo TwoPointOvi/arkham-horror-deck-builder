@@ -48,6 +48,7 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
         });
         // this.saveData(investigatorNoDup);
         this.setState({ investigatorCollection: investigatorNoDup });
+        console.log(investigatorNoDup);
     }
 
     cardCollection(res: any) {
@@ -179,7 +180,7 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
 
         if (!this.state.isLoading) {
             return (
-                <Grid container spacing={1}>
+                <Grid container spacing={1} style={{justifyContent: 'center'}}>
                     <Grid item xs={12} sm={4}>
                         <Grid item xs={12}>
                             <FormControl style={{minWidth: 200, backgroundColor: 'white', marginBottom: '20px'}} variant='filled'>
@@ -199,7 +200,7 @@ class DeckBuildingComponent extends React.Component<{}, DeckBuildingState> {
                         </Grid>
                         <InvestigatorDeckComponent investigator={this.state.investigator} investigatorData={this.state.investigatorInfo}></InvestigatorDeckComponent>
                     </Grid>
-                    <Grid item xs={12} sm={8}>
+                    <Grid item xs={12} sm={7}>
                         {deckCollection}
                     </Grid>
                 </Grid>

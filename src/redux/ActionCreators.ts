@@ -15,3 +15,8 @@ export const removeCardFromDeck = (cardId: any, amount: number) => ({
         amount
     }
 });
+
+export const deleteDeck = () => ({
+    type: ActionTypes.DELETE_DECK,
+    payload: {}
+});

@@ -1,10 +1,18 @@
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, List, ListItemText, Paper } from '@material-ui/core';
 import React from 'react';
+import { connect } from 'react-redux';
 import { ARKHAMDB } from '../shared/urls';
 
 type InvestigatorDeckProps = {
     investigator: string,
-    investigatorData: any
+    investigatorData: any,
+    deckCollection: any
+}
+
+const mapStateToProps = (state: any) => {
+    return {
+        deckCollection: state.deckCollection
+    };
 }
 
 class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {}> {
@@ -33,6 +41,17 @@ class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {
                             ></img>
                         </Paper>
                     </Grid>
+                    {/* <Grid item xs={12}>
+                        {
+                            this.props.deckCollection.cards.map((cardInDeck:any) => {
+                                return (
+                                    <List dense key={cardInDeck.id} style={{color:'black'}}>
+                                        <ListItemText primary={cardInDeck.cardId} secondary={cardInDeck.amount}></ListItemText>
+                                    </List>
+                                )
+                            })
+                        }
+                    </Grid> */}
                 </Grid>
             );
         } else {
@@ -41,4 +60,4 @@ class InvestigatorDeckComponent extends React.Component<InvestigatorDeckProps, {
     }
 }
 
-export default InvestigatorDeckComponent;
+export default connect(mapStateToProps)(InvestigatorDeckComponent);

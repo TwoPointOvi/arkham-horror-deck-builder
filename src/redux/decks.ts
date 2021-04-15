@@ -13,7 +13,7 @@ export const DeckCollection = (state: any = {
             
             if (existingCardIndex !== -1) {
                 state.cards[existingCardIndex].amount = action.payload.amount;
-                return state;
+                return {...state, cards: state.cards};
             } else {
                 return {...state, cards: state.cards.concat(card)};
             }
@@ -29,7 +29,9 @@ export const DeckCollection = (state: any = {
                 state.cards.splice(index, 1);
             }
 
-            return state;
+            return {...state, cards: state.cards};
+        case ActionTypes.DELETE_DECK:
+            return {...state, cards: []}
         default:
             return state;
     }

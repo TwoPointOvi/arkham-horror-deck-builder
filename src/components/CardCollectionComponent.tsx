@@ -158,7 +158,7 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                                     <Grow in={this.state.checked} mountOnEnter unmountOnExit key={card.code}
                                         timeout={{ enter: slicedCollection.indexOf(card) * 250 + 500, exit: 150}}
                                         onExited={() => this.updateIndexes()} onEntered={() => this.animationFinished()} onExiting={() => this.animationStarted()}>
-                                        <Grid item xs={12} sm={6} md={4}>
+                                        <Grid item xs={12} sm={6} lg={4}>
                                             <CardDetails cardInDeck={this.props.deckCollection.cards.filter((cardInDeck: any) => cardInDeck.cardId === card.code)[0]?.amount || 0} 
                                                 cardInfo={card} addCardToDeck={this.props.addCardToDeck} removeCardFromDeck={this.props.removeCardFromDeck}></CardDetails>
                                         </Grid>

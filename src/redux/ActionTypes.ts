@@ -1,2 +1,3 @@
 export const ADD_CARD_DECK = 'ADD_CARD_DECK';
 export const REMOVE_CARD_DECK = 'REMOVE_CARD_DECK';
+export const DELETE_DECK = 'DELETE_DECK';
