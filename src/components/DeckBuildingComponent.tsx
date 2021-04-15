@@ -170,6 +170,15 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
                     }
                 });
                 filteredCollection = filteredCollection.concat(auxFilter);
+            } else if (deckOption.uses) {
+                const auxFilter = this.state.cardCollection.filter((card: any) => {
+                    if (!filteredCollection.includes(card) &&
+                        card.text?.indexOf("Uses (") !== -1 && card.text?.indexOf(deckOption.uses[0] + ")") !== -1 &&
+                        card.xp >= deckOption.level.min && card.xp <= deckOption.level.max) {
+                        return true;
+                    }
+                });
+                filteredCollection = filteredCollection.concat(auxFilter);
             } else if (deckOption.level) {
                 const auxFilter = this.state.cardCollection.filter((card:any) => {
                     if (card.xp >= deckOption.level.min && card.xp <= deckOption.level.max && !filteredCollection.includes(card)) {

@@ -143,10 +143,10 @@ class CardCollection extends React.Component<CardCollectionProps, CardState> {
                         <CardCollectionFilter filterFunction={(type: string) => this.filterDeckCollection(type)}></CardCollectionFilter>
                     </Grid>
                     <Grid item xs={12} style={{alignContent:'flex-start'}}>
-                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(numberOfCardsPerPage) }}>
+                        <IconButton color='primary' size='medium' onClick={() => { this.handleIndexes(numberOfCardsPerPage) }}>
                             <ArrowLeftSharp></ArrowLeftSharp>
                         </IconButton>
-                        <IconButton color='secondary' size='medium' onClick={() => { this.handleIndexes(-numberOfCardsPerPage) }}>
+                        <IconButton color='primary' size='medium' onClick={() => { this.handleIndexes(-numberOfCardsPerPage) }}>
                             <ArrowRightSharp></ArrowRightSharp>
                         </IconButton>
                     </Grid>
