@@ -151,7 +151,6 @@ class DeckBuildingComponent extends React.Component<DeckBuildingProps, DeckBuild
 
         filteredCollection = this.state.cardCollection.filter((card:any) => {
             if (card.restrictions?.investigator) {
-                console.log(invInfo.code, card.restrictions.investigator, invInfo.code === card.restrictions.investigator);
                 return Object.keys(card.restrictions.investigator).includes(invInfo.code);
             }
 
